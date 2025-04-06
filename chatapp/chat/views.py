@@ -11,7 +11,7 @@ def get_response(request):
     user_message = request.GET.get('message')
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[{"role": "user", "content": "answer using html markup but without html, head, and other tags, just a piece of code and dont say anything unless answer the question below: \n" + user_message}],
+        messages=[{"role": "user", "content": "answer using html markup but without html, head, and other tags, just a piece of code and without ``` and dont say anything unless answer the question below: \n" + user_message}],
         web_search=False
     )
     return JsonResponse({'response': response.choices[0].message.content})

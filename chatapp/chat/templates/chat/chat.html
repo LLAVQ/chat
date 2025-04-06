@@ -4,25 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat with GPT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #chat-box {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            height: 400px;
+            overflow-y: auto;
+            background-color: #fff;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .user {
+            background-color: #d1e7dd;
+            text-align: right;
+        }
+        .gpt {
+            background-color: #f8d7da;
+            text-align: left;
+        }
+        #user-input {
+            width: calc(100% - 90px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #send-button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        #send-button:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 600px) {
+            #user-input {
+                width: calc(100% - 70px);
+            }
+        }
+    </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <h1>Chat with GPT</h1>
     <div id="chat-box"></div>
     <input type="text" id="user-input" placeholder="Type your message here...">
-    <button id="send-button">Send</button>
+    <button id="send-button"><i class="fas fa-paper-plane"></i> Send</button>
 
     <script>
         $(document).ready(function() {
+            function appendMessage(role, message) {
+                const messageClass = role === 'user' ? 'user' : 'gpt';
+                $('#chat-box').append(`<div class="message ${messageClass}">${role.charAt(0).toUpperCase() + role.slice(1)}: ${message}</div>`);
+                $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight); // Scroll to the bottom
+            }
+
             $('#send-button').click(function() {
+                sendMessage();
+            });
+
+            $('#user-input').keypress(function(event) {
+                if (event.which === 13) { // Enter key
+                    sendMessage();
+                    event.preventDefault(); // Prevent form submission
+                }
+            });
+
+            function sendMessage() {
                 const userMessage = $('#user-input').val();
-                $('#chat-box').append('<div>You: ' + userMessage + '</div>');
+                if (userMessage.trim() === '') return; // Prevent sending empty messages
+                appendMessage('user', userMessage);
                 $('#user-input').val('');
 
                 $.get('/chat/get_response/', { message: userMessage }, function(data) {
-                    $('#chat-box').append('<div>GPT: ' + data.response + '</div>');
+                    appendMessage('gpt', data.response);
                 });
-            });
+            }
         });
     </script>
 </body>
