@@ -54,7 +54,7 @@ async def generate_gpt_response(context: list) -> str:
 @dp.message(Command("start", "help"))
 async def handle_start(message: Message):
     """Welcome message with instructions"""
-    text = "🤖 *GPT-4 Assistant*\n\n" + "Send me a message to start chatting!\n" + "Commands:\n" + "/clear - Reset conversation history\n" + "/help - Show this message"
+    text = "🤖 *GPT-4 Assistant*\n\n" + "Send me a message to start chatting!\n" + "Commands:\n" + "/clear - Reset conversation history\n" + "/help - Show this message" + "Web version - https://5557-20-61-127-58.ngrok-free.app/chat"
     
     await message.reply(text)
 
